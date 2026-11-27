@@ -62,4 +62,6 @@ Map tiles: https://tile.openstreetmap.org/ with visible OpenStreetMap attributio
 
 ## Release checks
 
-Run domain.test.mjs for input validation, distances, filters, sorting, unknown-fee handling and text escaping. Deployment checks and live access-control checks are performed separately. Browser/device behaviour and external-map availability must also be checked; a successful static deployment alone does not prove every browser flow.
+Nine domain tests passed for input validation, date validation, distances, filters, sorting, unknown-fee handling and text escaping. Live checks passed for verified publishing, denial of unverified publishing, public active reads, exact-address privacy, owner-only edits, participant-only enquiries, replies, private saved places, moderation and denial of public access to hidden listings. The indexed public geo query returned HTTP 200. Temporary accounts and records were removed after testing.
+
+Browser/device interaction testing could not be completed because no connected browser-control tool was available. The first external Overpass request timed out in this environment; the app presents a retry message instead of invented results. Public map availability is not guaranteed by this project. File uploads remain pending by the owner's choice to keep billing off. A successful static deployment alone does not prove every browser flow.

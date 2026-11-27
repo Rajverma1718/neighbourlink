@@ -8,13 +8,14 @@ const money=(v,name)=>{const n=Number(v);if(v===''||!Number.isFinite(n)||n<0||n>
 export function validateListing(input){
  const kind=input.kind;if(!['restroom','rental'].includes(kind))throw new Error('Choose restroom or rental.');
  const location=coordinates(input.lat,input.lng);
+ if(!Array.isArray(input.features||[])||!Array.isArray(input.photos||[]))throw new Error('Use valid facility and photo lists.');
  const result={kind,title:text(input.title,'Title',4,100),description:text(input.description,'Description',15,2000),locality:text(input.locality,'Locality',2,150),...location,features:(input.features||[]).filter(x=>(kind==='rental'?AMENITIES:FACILITIES).includes(x)),photos:input.photos||[],status:input.status==='inactive'?'inactive':'active'};
  if(!Array.isArray(input.features||[])||!Array.isArray(result.photos)||result.photos.length>5)throw new Error('Use up to five photos.');
  if(kind==='rental'){
   result.rent=money(input.rent,'monthly rent');if(result.rent<=0)throw new Error('Monthly rent must be greater than zero.');result.deposit=money(input.deposit,'deposit');result.area_sqft=Number(input.area_sqft);if(!Number.isFinite(result.area_sqft)||result.area_sqft<=0||result.area_sqft>1000000)throw new Error('Enter a valid area in square feet.');
   if(!['Room','1 RK','1 BHK','2 BHK','3 BHK','House'].includes(input.property_type))throw new Error('Choose the property type.');result.property_type=input.property_type;
   if(!['Unfurnished','Semi-furnished','Furnished'].includes(input.furnishing))throw new Error('Choose the furnishing.');result.furnishing=input.furnishing;
-  result.available_from=text(input.available_from,'Available-from date',10,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(result.available_from)||Number.isNaN(Date.parse(result.available_from)))throw new Error('Choose a valid available-from date.');
+  result.available_from=text(input.available_from,'Available-from date',10,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(result.available_from)||Number.isNaN(Date.parse(result.available_from))||new Date(result.available_from).toISOString().slice(0,10)!==result.available_from)throw new Error('Choose a valid available-from date.');
   result.lat=Math.round(result.lat*1000)/1000;result.lng=Math.round(result.lng*1000)/1000;
  }else{result.fee=input.fee===''||input.fee==null?null:money(input.fee,'entry fee');result.hours=text(input.hours||'Not provided','Opening hours',2,160);result.access=text(input.access||'Public','Access details',2,160)}
  return result;

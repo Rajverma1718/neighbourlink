@@ -28,7 +28,7 @@ service cloud.firestore {
   }
   match /users/{uid}/saved/{id} {
    allow read,delete: if signed() && request.auth.uid==uid;
-   allow create,update: if signed() && request.auth.uid==uid && request.resource.data.keys().hasOnly(['listing_id','created_at']) && request.resource.data.listing_id==id && request.resource.data.created_at==request.time;
+   allow create,update: if signed() && request.auth.uid==uid && request.resource.data.keys().hasOnly(['listing_id','created_at','snapshot']) && request.resource.data.listing_id==id && request.resource.data.created_at==request.time && (!request.resource.data.keys().hasAny(['snapshot']) || (id.matches('osm-(node|way|relation)-[0-9]+') && request.resource.data.snapshot is map && request.resource.data.snapshot.size()<=20));
   }
   match /enquiries/{id} {
    allow get: if signed() && (id.matches('.*_'+request.auth.uid) || request.auth.uid in [resource.data.sender_id,resource.data.owner_id]);

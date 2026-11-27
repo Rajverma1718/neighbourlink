@@ -8,3 +8,4 @@ test('Unknown restroom fee is not labelled free',()=>{const r={kind:'restroom',s
 test('Price sorting does not mutate source array',()=>{const a=[{rent:20},{rent:10}];assert.equal(sortListings(a,'price')[0].rent,10);assert.equal(a[0].rent,20)});
 test('OSM import preserves unknown fees and uses real element IDs',()=>{const r=osmRestrooms([{type:'node',id:123,lat:19,lon:72,tags:{amenity:'toilets',wheelchair:'yes'}}])[0];assert.equal(r.id,'osm-node-123');assert.equal(r.fee,null);assert.deepEqual(r.features,['Wheelchair accessible'])});
 test('UI text is escaped',()=>assert.equal(escapeHTML('<script>'), '&lt;script&gt;'));
+test('Malformed facilities and impossible dates are rejected',()=>{assert.throws(()=>validateListing({...rental,features:'Wi-Fi'}));assert.throws(()=>validateListing({...rental,available_from:'2026-02-31'}))});
