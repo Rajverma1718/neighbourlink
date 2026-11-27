@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {coordinates,distanceKm,validateListing,listingMatches,sortListings,osmRestrooms,escapeHTML} from './public/domain.js';
+const rental={kind:'rental',title:'A real room listing',description:'A bright room near the station.',locality:'Kurla, Mumbai',lat:19.07234,lng:72.88312,rent:12000,deposit:24000,area_sqft:300,property_type:'Room',furnishing:'Unfurnished',available_from:'2026-12-01',features:['Water supply'],photos:[]};
+test('Rental validation rounds public location and keeps price',()=>{const r=validateListing(rental);assert.equal(r.lat,19.072);assert.equal(r.lng,72.883);assert.equal(r.rent,12000)});
+test('Invalid rent, size and coordinates fail validation',()=>{for(const change of [{rent:-5},{area_sqft:0},{lat:91},{property_type:'Other'}])assert.throws(()=>validateListing({...rental,...change}))});
+test('Distance is zero at same point and symmetric',()=>{const a={lat:19,lng:72},b={lat:20,lng:73};assert.equal(distanceKm(a,a),0);assert.ok(Math.abs(distanceKm(a,b)-distanceKm(b,a))<1e-9)});
+test('Filters combine rent, property type and locality',()=>{const r={...validateListing(rental),status:'active'};assert.equal(listingMatches(r,{kind:'rental',query:'kurla',maxRent:15000,propertyType:'Room'}),true);assert.equal(listingMatches(r,{kind:'rental',maxRent:10000}),false)});
+test('Unknown restroom fee is not labelled free',()=>{const r={kind:'restroom',status:'active',title:'Public toilet',locality:'Mumbai',fee:null};assert.equal(listingMatches(r,{kind:'restroom',freeOnly:true}),false)});
+test('Price sorting does not mutate source array',()=>{const a=[{rent:20},{rent:10}];assert.equal(sortListings(a,'price')[0].rent,10);assert.equal(a[0].rent,20)});
+test('OSM import preserves unknown fees and uses real element IDs',()=>{const r=osmRestrooms([{type:'node',id:123,lat:19,lon:72,tags:{amenity:'toilets',wheelchair:'yes'}}])[0];assert.equal(r.id,'osm-node-123');assert.equal(r.fee,null);assert.deepEqual(r.features,['Wheelchair accessible'])});
+test('UI text is escaped',()=>assert.equal(escapeHTML('<script>'), '&lt;script&gt;'));

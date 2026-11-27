@@ -1,0 +1,1 @@
+{"name":"neighbourlink","version":"1.0.0","private":true,"type":"module","engines":{"node":">=22"},"scripts":{"start":"node serve.cjs","test":"node --test domain.test.mjs","build":"node build.cjs"}}

@@ -63,4 +63,3 @@ Map tiles: https://tile.openstreetmap.org/ with visible OpenStreetMap attributio
 ## Release checks
 
 Run domain.test.mjs for input validation, distances, filters, sorting, unknown-fee handling and text escaping. Deployment checks and live access-control checks are performed separately. Browser/device behaviour and external-map availability must also be checked; a successful static deployment alone does not prove every browser flow.
-

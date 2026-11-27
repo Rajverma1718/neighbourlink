@@ -1,0 +1,1 @@
+const fs=require('node:fs'),path=require('node:path');fs.mkdirSync(path.join(__dirname,'dist'),{recursive:true});for(const f of fs.readdirSync(path.join(__dirname,'public'))){if(fs.statSync(path.join(__dirname,'public',f)).isFile())fs.copyFileSync(path.join(__dirname,'public',f),path.join(__dirname,'dist',f))}console.log('Built public website in dist/');
